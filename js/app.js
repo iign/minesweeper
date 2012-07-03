@@ -12,12 +12,13 @@ var MS = (function () {
 		myPublicVar: "foo",
 
 		gridSize: 9,
+		scoreBombs: 10,
 
 		init: function(){
 
 			var bombCounter = 10;
 
-			$('#board .square').removeClass('cleared', 'bombed').text('');
+			$('#board .square').removeClass('cleared bombed trigger').text('');
 			
 			$('#board .square').each(function(index){
 
@@ -104,8 +105,16 @@ var MS = (function () {
 					}
 
 					grid[x][y].status = CELL_STATUS.CLEARED;
-					var cellText = grid[x][y].bombCount? grid[x][y].bombCount : '';
-					$('#cell-' + x + '-' + y).addClass('cleared').text( cellText );
+					var cellText = grid[x][y].bombCount;
+
+					if (cellText > 0) {
+
+						$('#cell-' + x + '-' + y).addClass('cleared ' + 'bomb-' + cellText).text( cellText );
+
+					}
+					else{
+						$('#cell-' + x + '-' + y).addClass('cleared');
+					}
 
 					//check win condition.
 					
@@ -141,8 +150,15 @@ var MS = (function () {
 				}
 				else{
 					(grid[x][y]).status = CELL_STATUS.CLEARED;
-					var cellText = (grid[x][y]).bombCount? (grid[x][y]).bombCount : '';
-					$('#cell-' + x + '-' + y).addClass('cleared').text( cellText );
+					var cellText = (grid[x][y]).bombCount;
+					if (cellText > 0) {
+
+						$('#cell-' + x + '-' + y).addClass('cleared ' + 'bomb-' + cellText).text( cellText );
+
+					}
+					else{
+						$('#cell-' + x + '-' + y).addClass('cleared');
+					}
 				}
 
 			}
@@ -164,7 +180,17 @@ var MS = (function () {
 
 		},
 
-		flagCell: function(){
+		flagCell: function( x, y ){
+
+			if ( grid[x][y].status === CELL_STATUS.NEW && this.scoreBombs > 0 ) {
+
+				$('#cell-' + x + '-' + y).addClass('flagged');
+				grid[x][y].status = CELL_STATUS.FLAGGED;
+				this.scoreBombs--;
+				$('#score-bomb-count').text(this.zeroPad(this.scoreBombs, 3));
+
+			}	
+
 
 		},
 
@@ -182,6 +208,28 @@ var MS = (function () {
 				MS.init();
 
 			});
+
+
+			//Flagging bombs.
+			$('#board .square').on('contextmenu rightclick', function(e){
+			    e.preventDefault();
+			    MS.flagCell($(this).attr('data-x'), $(this).attr('data-y'));
+			    return false;
+			});
+
+
+
+		},
+
+		//Helper function, padding numbers.
+		zeroPad: function(number, width){
+			width -= number.toString().length;
+			if ( width > 0 )
+			{
+				return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+			}
+			
+			return number + ''; // always return a string
 
 		}
 
