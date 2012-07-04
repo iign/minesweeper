@@ -34,6 +34,8 @@ body{
 	width: auto;
 	height: 26px;
 
+	position: relative;
+
 	background-color: #BFBFBF;
 
 
@@ -52,6 +54,8 @@ body{
 	display: inline-block;
 	padding: 1px;
 
+	position: absolute;
+
 	background-color: black;
 	color: #DF0D14;
 	font-weight: bold;
@@ -63,6 +67,15 @@ body{
 
 	border-right: 	1px solid #F0F0F0;
 	border-bottom: 	1px solid #F0F0F0;
+}
+
+#score-bomb-count{
+	left: 10px;
+}
+
+#score-time-count{
+	right: 10px;
+	top: 10px;
 }
 
 /* Smiley images borrowed from http://jsdo.it/No_1026/urFs */
