@@ -189,6 +189,7 @@ var MS = (function () {
 			}
 
 			$('#board button').attr('disabled', 'disabled');
+			window.clearInterval(timer);
 
 		},
 
