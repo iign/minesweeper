@@ -20,7 +20,7 @@ var MS = (function () {
 
 			var bombCounter = 10;
 			this.scoreBombs = 10;
-			this.timeLeft = 300;
+			this.timeElapsed = 0;
 
 
 			this.startTimer();
@@ -278,6 +278,7 @@ var MS = (function () {
 
 		startTimer: function(){
 
+			$('#score-time-count').text(this.zeroPad(0, 3));
 			clearInterval(timer);
 			var ms = this;
 			timer = window.setInterval(function(){
