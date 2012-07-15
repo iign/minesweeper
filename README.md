@@ -8,7 +8,7 @@ This is a work in progress and experiment to learn more about JS coding techniqu
 
 TODO
 ----
-* Make it work.
+* Make it work. ✔
 * Refactor.
 * Cool styling (better fonts, centered board, etc).
 * Dynamic grid game sizes and bombs.
