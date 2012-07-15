@@ -362,7 +362,7 @@ lFTkSuQmCC') center center no-repeat;
 }
 
 
-button.square{
+button.square, button.square[disabled]:active{
 	margin: 0px;
 	padding: 0px;
 	width: 21px;

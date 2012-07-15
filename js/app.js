@@ -5,20 +5,31 @@ var MS = (function () {
 	
 	//private grid.
 	var grid = [];
+	var timer = null;
+
 
 	return {
 
-		// A public variable
-		myPublicVar: "foo",
 
-		gridSize: 9,
-		scoreBombs: 10,
+		gridSize: 9, //Board size
+		bombSize: 10, //Amount of bombs in board
+		scoreBombs: 10, //Bombs flagged count
+		timeElapsed: 0,
 
 		init: function(){
 
 			var bombCounter = 10;
+			this.scoreBombs = 10;
+			this.timeLeft = 300;
 
-			$('#board .square').removeClass('cleared bombed trigger').text('');
+
+			this.startTimer();
+
+			$('#board .square').removeClass('cleared bombed flagged trigger bomb-1 bomb-2 bomb-3 bomb-4 bomb-5 bomb-6').text('');
+			$('#board button').removeAttr('disabled');
+			$('#score-restart-button').removeClass('success');
+
+			$('#score-bomb-count').text(this.zeroPad(this.scoreBombs, 3));
 			
 			$('#board .square').each(function(index){
 
@@ -56,7 +67,6 @@ var MS = (function () {
 				if ( !(grid[x][y]).hasBomb ) {
 					(grid[x][y]).hasBomb = true;
 					b--;
-					console.log('x:' + x + ' y:' + y + ' Bomb!');
 				}
 			}
 
@@ -79,7 +89,7 @@ var MS = (function () {
 				}
 			}
 
-			this.bindEvents();
+			
 
 		},
 
@@ -116,7 +126,7 @@ var MS = (function () {
 						$('#cell-' + x + '-' + y).addClass('cleared');
 					}
 
-					//check win condition.
+					
 					
 				}
 			}
@@ -127,7 +137,7 @@ var MS = (function () {
 		//Cleans out cells with no adjacent bombs all at once.
 		clearAdjacentCells: function(x, y){
 
-			if ( (x > 0 && y > 0) && (x < this.gridSize + 1 && y < this.gridSize + 1) && (grid[x][y]).status !== CELL_STATUS.CLEARED  ) {
+			if ( (x > 0 && y > 0) && (x < this.gridSize + 1 && y < this.gridSize + 1) && (grid[x][y]).status !== CELL_STATUS.CLEARED && (grid[x][y]).status !== CELL_STATUS.FLAGGED ) {
 
 
 				if ( (grid[x][y]).bombCount === 0) {
@@ -178,9 +188,13 @@ var MS = (function () {
 				}
 			}
 
+			$('#board button').attr('disabled', 'disabled');
+
 		},
 
 		flagCell: function( x, y ){
+
+			
 
 			if ( grid[x][y].status === CELL_STATUS.NEW && this.scoreBombs > 0 ) {
 
@@ -189,8 +203,15 @@ var MS = (function () {
 				this.scoreBombs--;
 				$('#score-bomb-count').text(this.zeroPad(this.scoreBombs, 3));
 
-			}	
+			}
+			else if(grid[x][y].status === CELL_STATUS.FLAGGED){
+				$('#cell-' + x + '-' + y).removeClass('flagged');
+				grid[x][y].status = CELL_STATUS.NEW;
+				this.scoreBombs++;
+				$('#score-bomb-count').text(this.zeroPad(this.scoreBombs, 3));
+			}
 
+			this.checkWinCondition();
 
 		},
 
@@ -212,11 +233,33 @@ var MS = (function () {
 
 			//Flagging bombs.
 			$('#board .square').on('contextmenu rightclick', function(e){
-			    e.preventDefault();
-			    MS.flagCell($(this).attr('data-x'), $(this).attr('data-y'));
-			    return false;
+				e.preventDefault();
+				MS.flagCell($(this).attr('data-x'), $(this).attr('data-y'));
+				return false;
 			});
 
+
+
+		},
+
+		checkWinCondition: function(){
+
+			var flaggedBombs = 0;
+			for (var i = 1; i <= this.gridSize; i++) {
+				for (var j = 1; j <= this.gridSize; j++) {
+
+					if (grid[i][j].status === CELL_STATUS.FLAGGED && grid[i][j].hasBomb ) {
+						flaggedBombs++;
+					}
+
+				}
+			}
+
+			if (flaggedBombs === this.bombSize) {
+				$('#score-restart-button').addClass('success');
+				$('#board button').attr('disabled', 'disabled');
+				alert('You Win! Time: ' + this.timeElapsed);
+			}
 
 
 		},
@@ -231,6 +274,22 @@ var MS = (function () {
 			
 			return number + ''; // always return a string
 
+		},
+
+		startTimer: function(){
+
+			clearInterval(timer);
+			var ms = this;
+			timer = window.setInterval(function(){
+
+				ms.timeElapsed++;
+				$('#score-time-count').text(ms.zeroPad(ms.timeElapsed, 3));
+				
+
+
+			}, 1000);
+
+
 		}
 
 
@@ -240,3 +299,4 @@ var MS = (function () {
 
 //Start game
 MS.init();
+MS.bindEvents();
