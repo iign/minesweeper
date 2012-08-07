@@ -19,6 +19,11 @@ body{
 	background: url(../img/light_noise_diagonal.png) repeat 0 0;
 }
 
+h1{
+	font-family: 'Doppio One', sans-serif;
+	color: #FF1C7E;
+}
+
 #wrapper{ 
 
 	width: 200px;
