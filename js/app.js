@@ -249,6 +249,10 @@ var MS = (function () {
 			for (var i = 1; i <= this.gridSize; i++) {
 				for (var j = 1; j <= this.gridSize; j++) {
 
+					if (grid[i][j].status === CELL_STATUS.NEW){
+						return;
+					}
+
 					if (grid[i][j].status === CELL_STATUS.FLAGGED && grid[i][j].hasBomb ) {
 						flaggedBombs++;
 					}
@@ -259,6 +263,7 @@ var MS = (function () {
 			if (flaggedBombs === this.bombSize) {
 				$('#score-restart-button').addClass('success');
 				$('#board button').attr('disabled', 'disabled');
+				clearInterval(timer);
 				alert('You Win! Time: ' + this.timeElapsed);
 			}
 
