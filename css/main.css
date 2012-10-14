@@ -22,13 +22,14 @@ body{
 h1{
 	font-family: 'Doppio One', sans-serif;
 	color: #FF1C7E;
+	text-align: center;
 }
 
-#wrapper{ 
+.wrapper{
 
 	width: 200px;
-	margin: 60px;
-	
+	margin: 50px auto;
+
 	border: 8px solid #BFBFBF;
 
 }
@@ -51,7 +52,7 @@ h1{
 
 	border-right: 	3px solid white;
 	border-bottom: 	3px solid white;
-	
+
 }
 
 #scoreboard .panel{
@@ -353,7 +354,7 @@ lFTkSuQmCC') center center no-repeat;
 
 #board{
 	font-family: 'Doppio One', sans-serif;
-	
+
 
 	width: auto;
 	height: 190px;
@@ -427,7 +428,7 @@ button.square.bomb-2{
 }
 
 button.square.bomb-3{
-	color: #FA1000;	
+	color: #FA1000;
 }
 
 button.square.bomb-4{
@@ -437,6 +438,3 @@ button.square.bomb-4{
 button.square.bomb-5{
 	color: #780200;
 }
-
-
-
