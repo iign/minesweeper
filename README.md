@@ -10,6 +10,10 @@ TODO
 ----
 * Make it work. ✔
 * Refactor.
-* Cool styling (better fonts, centered board, etc).
+* Cool styling (better fonts, centered board, etc) ✔
 * Dynamic grid game sizes and bombs.
 * ?
+
+Live Demo
+-----
+[HTML Minesweeper](http://ign.uy/minesweeper/)
