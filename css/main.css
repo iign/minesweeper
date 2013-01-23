@@ -65,14 +65,18 @@ h1{
 	background-color: black;
 	color: #DF0D14;
 	font-weight: bold;
-	font-size: 16px;
-	font-family: monospace;
+	font-size: 18px;
+	font-family: DS-Digital, monospace;
 
 	border-top: 	1px solid #707070;
 	border-left: 	1px solid #707070;
 
 	border-right: 	1px solid #F0F0F0;
 	border-bottom: 	1px solid #F0F0F0;
+
+	width: 36px;
+	text-align: center;
+	cursor: default;
 }
 
 #score-bomb-count{
