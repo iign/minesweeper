@@ -2,14 +2,12 @@ var MS = (function () {
 	"use strict";
 
 	var CELL_STATUS = { NEW: 0, FLAGGED: 1, CLEARED: 2, BOMBED: 3 };
-	
+
 	//private grid.
 	var grid = [];
 	var timer = null;
 
-
 	return {
-
 
 		gridSize: 9, //Board size
 		bombSize: 10, //Amount of bombs in board
@@ -18,10 +16,9 @@ var MS = (function () {
 
 		init: function(){
 
-			var bombCounter = 10;
+			this.bombSize = 10;
 			this.scoreBombs = 10;
 			this.timeElapsed = 0;
-
 
 			this.startTimer();
 
@@ -30,7 +27,7 @@ var MS = (function () {
 			$('#score-restart-button').removeClass('success');
 
 			$('#score-bomb-count').text(this.zeroPad(this.scoreBombs, 3));
-			
+
 			$('#board .square').each(function(index){
 
 				index++;
@@ -43,7 +40,6 @@ var MS = (function () {
 
 			});
 
-			
 			//Init grid.
 			//zero-index & 10-index are dummy cells
 			for (var row = 0; row <= this.gridSize + 1; row++) {
@@ -54,12 +50,11 @@ var MS = (function () {
 				}
 			}
 
-
 			//Insert bombs randomly
-			var b = bombCounter;
+			var b = MS.bombSize;
 
 			while(b > 0){
-				
+
 				var x = Math.ceil(Math.random() * this.gridSize);
 				var y = Math.ceil(Math.random() * this.gridSize);
 
@@ -89,20 +84,17 @@ var MS = (function () {
 				}
 			}
 
-			
-
 		},
 
-
 		clickCell: function(x, y){
-			
+
 			if (grid[x][y].status === CELL_STATUS.NEW) {
 				if ( grid[x][y].hasBomb ) {
 					grid[x][y].status = CELL_STATUS.BOMBED;
 					$('#cell-' + x + '-' + y).addClass('bombed trigger');
 
 					this.revealBombs();
-					
+
 				}
 				else{
 
@@ -111,7 +103,10 @@ var MS = (function () {
 						if ( (x > 0 && y > 0) && (x < this.gridSize + 1 && y < this.gridSize + 1) ) {
 							this.clearAdjacentCells(x, y);
 						}
+					}
 
+					if (MS.scoreBombs === 0) {
+						this.checkWinCondition();
 					}
 
 					grid[x][y].status = CELL_STATUS.CLEARED;
@@ -126,12 +121,8 @@ var MS = (function () {
 						$('#cell-' + x + '-' + y).addClass('cleared');
 					}
 
-					
-					
 				}
 			}
-
-
 		},
 
 		//Cleans out cells with no adjacent bombs all at once.
@@ -139,9 +130,8 @@ var MS = (function () {
 
 			if ( (x > 0 && y > 0) && (x < this.gridSize + 1 && y < this.gridSize + 1) && (grid[x][y]).status !== CELL_STATUS.CLEARED && (grid[x][y]).status !== CELL_STATUS.FLAGGED ) {
 
-
 				if ( (grid[x][y]).bombCount === 0) {
-					
+
 					(grid[x][y]).status = CELL_STATUS.CLEARED;
 					$('#cell-' + x + '-' + y).addClass('cleared');
 
@@ -179,7 +169,7 @@ var MS = (function () {
 
 			for (var i = 1; i <= this.gridSize; i++) {
 				for (var j = 1; j <= this.gridSize; j++) {
-				
+
 					if ( (grid[i][j]).hasBomb  &&  (grid[i][j]).status !== CELL_STATUS.CLEARED ) {
 						(grid[i][j]).status = CELL_STATUS.BOMBED;
 						$('#cell-' + i + '-' + j).addClass('bombed');
@@ -194,8 +184,6 @@ var MS = (function () {
 		},
 
 		flagCell: function( x, y ){
-
-			
 
 			if ( grid[x][y].status === CELL_STATUS.NEW && this.scoreBombs > 0 ) {
 
@@ -219,18 +207,16 @@ var MS = (function () {
 		//Bind mouse events.
 		bindEvents: function() {
 			$("#board .square").on('click', function(event){
-				
+
 				MS.clickCell( $(this).attr('data-x'), $(this).attr('data-y') );
 
 			});
 
-
 			$('#score-restart-button').on('click', function(event) {
-				
+
 				MS.init();
 
 			});
-
 
 			//Flagging bombs.
 			$('#board .square').on('contextmenu rightclick', function(e){
@@ -239,25 +225,28 @@ var MS = (function () {
 				return false;
 			});
 
-
-
 		},
 
 		checkWinCondition: function(){
 
 			var flaggedBombs = 0;
+			var unclearedCells = 0;
+
 			for (var i = 1; i <= this.gridSize; i++) {
 				for (var j = 1; j <= this.gridSize; j++) {
 
 					if (grid[i][j].status === CELL_STATUS.NEW){
-						return;
+						unclearedCells++;
 					}
 
 					if (grid[i][j].status === CELL_STATUS.FLAGGED && grid[i][j].hasBomb ) {
 						flaggedBombs++;
 					}
-
 				}
+			}
+
+			if (unclearedCells > 1){
+				return false;
 			}
 
 			if (flaggedBombs === this.bombSize) {
@@ -266,7 +255,9 @@ var MS = (function () {
 				clearInterval(timer);
 				alert('You Win! Time: ' + this.timeElapsed);
 			}
-
+			else{
+				return false;
+			}
 
 		},
 
@@ -277,7 +268,7 @@ var MS = (function () {
 			{
 				return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
 			}
-			
+
 			return number + ''; // always return a string
 
 		},
@@ -291,14 +282,10 @@ var MS = (function () {
 
 				ms.timeElapsed++;
 				$('#score-time-count').text(ms.zeroPad(ms.timeElapsed, 3));
-				
-
 
 			}, 1000);
 
-
 		}
-
 
 	};
 
